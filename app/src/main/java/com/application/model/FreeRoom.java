@@ -28,6 +28,6 @@ public class FreeRoom extends Room {
      */
     @Override
     public String toString() {
-        return String.format("FreeRoom={roomNumber=%s, roomPrice=0.0, roomType=%s, free=%b}", roomNumber, roomType, free);
+        return String.format("FreeRoom={roomNumber=%s, roomPrice=0.0, roomType=%s, free=%b}", getRoomNumber(), getRoomPrice(), getRoomType(), isFree());
     }
 }

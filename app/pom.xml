@@ -20,7 +20,7 @@
                             <mainClass>com.application.Main</mainClass>
                         </manifest>
                     </archive>
-                </configuration>
+                </configuration>                
             </plugin>
         </plugins>
     </build>
