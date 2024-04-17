@@ -17,7 +17,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.application.Main</mainClass>
+                            <mainClass>com.application.HotelApplication</mainClass>
                         </manifest>
                     </archive>
                 </configuration>                

@@ -20,26 +20,26 @@ public class Reservation {
     /**
      * The date the room was checked in
      */
-    private final Date checkIn;
+    private final Date checkInDate;
 
     /**
      * The date the room was checked out
      */
-    private final Date checkOut;
+    private final Date checkOutDate;
 
     /**
      * Creates a new reservation
      * 
      * @param customer The customer who made the reservation
      * @param room The room that was reserved
-     * @param checkIn The date the room was checked in
-     * @param checkOut The date the room was checked out
+     * @param checkInDate The date the room was checked in
+     * @param checkOutDate The date the room was checked out
      */
-    public Reservation(Customer customer, IRoom room, Date checkIn, Date checkOut) {
+    public Reservation(Customer customer, IRoom room, Date checkInDate, Date checkOutDate) {
         this.customer = customer;
         this.room = room;
-        this.checkIn = checkIn;
-        this.checkOut = checkOut;
+        this.checkInDate = checkInDate;
+        this.checkOutDate = checkOutDate;
     }
 
     /**
@@ -65,8 +65,8 @@ public class Reservation {
      * 
      * @return The date the room was checked in
      */
-    public Date getCheckIn() {
-        return checkIn;
+    public Date getCheckInDate() {
+        return checkInDate;
     }
 
     /**
@@ -74,8 +74,8 @@ public class Reservation {
      * 
      * @return The date the room was checked out
      */
-    public Date getCheckOut() {
-        return checkOut;
+    public Date getCheckOutDate() {
+        return checkOutDate;
     }
 
     /**
@@ -86,7 +86,7 @@ public class Reservation {
      */
     @Override
     public String toString() {
-        return String.format("Reservation={customer=%s, room=%s, checkIn=%s, checkOut=%s}", customer, room, checkIn, checkOut);
+        return String.format("Reservation={customer=%s, room=%s, checkInDate=%s, checkOutDate=%s}", customer, room, checkInDate, checkOutDate);
     }
 }
 

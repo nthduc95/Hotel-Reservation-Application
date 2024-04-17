@@ -18,21 +18,21 @@ public class Customer {
      * The customer's email address. It must be in the format 
      * {@code ^[\\w.-]+@([\\w.-]+)\\.com$}.
      */
-    private String emailAddress;
+    private String email;
 
     /**
      * Creates a new customer.
      * 
      * @param firstName The customer's first name
      * @param lastName The customer's last name
-     * @param emailAddress The customer's email address
-     * @throws IllegalArgumentException If {@code emailAddress} is null, empty,
+     * @param email The customer's email address
+     * @throws IllegalArgumentException If {@code email} is null, empty,
      * or does not match the expected format
      */
-    public Customer(String firstName, String lastName, String emailAddress) {
+    public Customer(String firstName, String lastName, String email) {
         setFirstName(firstName);
         setLastName(lastName);
-        setEmailAddress(emailAddress);
+        setEmail(email);
     }
 
     /**
@@ -76,23 +76,23 @@ public class Customer {
      * 
      * @return The customer's email address
      */
-    public String getEmailAddress() {
-        return emailAddress;
+    public String getEmail() {
+        return email;
     }
 
     /**
      * Sets the customer's email address. It must be in the format 
      * {@code ^[\\w.-]+@([\\w.-]+)\\.com$}.
      * 
-     * @param emailAddress The new customer's email address
-     * @throws IllegalArgumentException If {@code emailAddress} is null, empty,
+     * @param email The new customer's email address
+     * @throws IllegalArgumentException If {@code email} is null, empty,
      * or does not match the expected format
      */
-    public void setEmailAddress(String emailAddress) {
-        if (emailAddress == null || emailAddress.isEmpty() || !emailAddress.matches("^[\\w.-]+@([\\w.-]+)\\.com$")) {
+    public void setEmail(String email) {
+        if (email == null || email.isEmpty() || !email.matches("^[\\w.-]+@([\\w.-]+)\\.com$")) {
             throw new IllegalArgumentException("Invalid email address");
         }
-        this.emailAddress = emailAddress;
+        this.email = email;
     }
 
     /**
@@ -103,7 +103,7 @@ public class Customer {
      */
     @Override
     public String toString() {
-        return String.format("Customer={firstName=%s, lastName=%s, emailAddress=%s}", firstName, lastName, emailAddress);
+        return String.format("Customer={firstName=%s, lastName=%s, email=%s}", firstName, lastName, email);
     }
 }
 
