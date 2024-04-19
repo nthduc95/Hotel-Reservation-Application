@@ -102,7 +102,7 @@ public class MainMenu {
         };
 
         int mainMenuChoice = getMenuChoice("Main Menu", mainMenuItems, scanner);
-
+        System.out.println(mainMenuChoice);
         switch (mainMenuChoice) {
             case 1:
                 // Find and reserve a room
@@ -155,9 +155,13 @@ public class MainMenu {
     private static int getMenuChoice(String menuTitle, List<String> menuItems, Scanner scanner) {
         displayMenu(menuItems, menuTitle);
         int choice = 0;
+        System.out.println("Enter your choice: ");
         do {
-            System.out.print("Enter your choice: ");
-            choice = scanner.nextInt();           
+            if (scanner.hasNextInt()) {
+                choice = scanner.nextInt();
+            } else {
+                System.out.println("Invalid choice. Please try again.");
+            }
         } while (choice < 0 || choice >= menuItems.size());
         return choice;
     }
@@ -178,7 +182,7 @@ public class MainMenu {
                     System.out.println("Invalid date. Please try again.");
                 }                
             }
-            System.out.print("Enter a date in mm/dd/yyyy format: ");
+            System.out.print("Enter a date in dd/mm/yyyy format: ");
             rawDate = scanner.next();
         }
     }
