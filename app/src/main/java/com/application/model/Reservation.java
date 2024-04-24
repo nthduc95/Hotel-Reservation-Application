@@ -10,22 +10,22 @@ public class Reservation {
     /**
      * The customer who made the reservation
      */
-    private final Customer customer;
+    private Customer customer;
 
     /**
      * The room that was reserved
      */
-    private final IRoom room;
+    private IRoom room;
 
     /**
      * The date the room was checked in
      */
-    private final Date checkInDate;
+    private Date checkInDate;
 
     /**
      * The date the room was checked out
      */
-    private final Date checkOutDate;
+    private Date checkOutDate;
 
     /**
      * Creates a new reservation
