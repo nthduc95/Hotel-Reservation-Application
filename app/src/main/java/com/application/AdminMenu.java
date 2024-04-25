@@ -1,6 +1,9 @@
 package com.application;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Scanner;
 
 import com.application.api.AdminResource;
 import com.application.model.Customer;
@@ -82,7 +85,7 @@ public class AdminMenu {
      */
     private int getValidRoomTypeIdx(Scanner scanner) {
         while (true) {
-            System.out.println("Please enter room type: ");
+            System.out.println("Please enter room type (1: SINGLE, 2: DOUBLE): ");
             if (scanner.hasNextInt()) {
                 int roomTypeIdx = scanner.nextInt();
                 if (roomTypeIdx > 0 && roomTypeIdx <= RoomType.values().length) {
@@ -106,11 +109,11 @@ public class AdminMenu {
      */
     private boolean getValidIsFree(Scanner scanner) {
         while (true) {
-            System.out.println("Please enter if room is free (1/2): ");
+            System.out.println("Please enter if room is free (0: False, 1: True): ");
 
             if (scanner.hasNextInt()) {
                 int isFree = scanner.nextInt();
-                if (isFree == 1 || isFree == 2) {
+                if (isFree == 0 || isFree == 1) {
                     return isFree == 1;
                 } else {
                     System.out.println("Invalid choice. Please try again.");

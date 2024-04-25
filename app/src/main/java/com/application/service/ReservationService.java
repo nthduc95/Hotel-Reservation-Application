@@ -7,8 +7,6 @@ import java.util.Date;
 import com.application.model.Customer;
 import com.application.model.IRoom;
 import com.application.model.Reservation;
-import com.application.model.Room;
-import com.application.model.RoomType;
 
 /**
  * A service class that manages reservations and rooms in the hotel application.
@@ -58,6 +56,13 @@ public class ReservationService {
     public IRoom getARoom(String roomNumber) {
         return this.rooms.stream().filter(room -> room.getRoomNumber().equalsIgnoreCase(roomNumber)).findFirst()
                 .orElse(null);
+    }
+
+    /**
+     * return all room in the hotel
+     */
+    public Collection<IRoom> getAllRooms() {
+        return this.rooms;
     }
 
     /**

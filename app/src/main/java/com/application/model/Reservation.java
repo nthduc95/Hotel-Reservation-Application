@@ -1,5 +1,7 @@
 package com.application.model;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -86,7 +88,8 @@ public class Reservation {
      */
     @Override
     public String toString() {
-        return String.format("Reservation={customer=%s, room=%s, checkInDate=%s, checkOutDate=%s}", customer, room, checkInDate, checkOutDate);
+        DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        return String.format("Reservation={customer=%s, room=%s, checkInDate=%s, checkOutDate=%s}", customer, room, df.format(checkInDate), df.format(checkOutDate));
     }
 }
 

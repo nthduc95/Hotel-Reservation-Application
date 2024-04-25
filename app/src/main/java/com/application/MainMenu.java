@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.Scanner;
 
 import com.application.api.HotelResource;
+import com.application.model.Customer;
 import com.application.model.IRoom;
 import com.application.model.Reservation;
 
@@ -20,25 +21,37 @@ public class MainMenu {
     }
 
     public void createACustomerUI(Scanner scanner) {
-        System.out.println("Enter customer email: ");
-        String email = scanner.nextLine();
+        do {
+            System.out.println("Enter customer email: ");
+            String email = scanner.next();
 
-        if (email.matches("^[\\w-\\.]+@([\\w-]+\\.com)$") && HOTEL_RESOURCE.getCustomer(email) == null) {
-            System.out.println("Enter customer first name: ");
-            String firstName = scanner.nextLine();
+            if (email.matches("^[\\w-\\.]+@([\\w-]+\\.com)$") && HOTEL_RESOURCE.getCustomer(email) == null) {
+                System.out.println("Enter customer first name: ");
+                String firstName = scanner.next();
 
-            System.out.println("Enter customer last name: ");
-            String lastName = scanner.nextLine();
+                System.out.println("Enter customer last name: ");
+                String lastName = scanner.next();
 
-            try {
-                HOTEL_RESOURCE.createCustomer(email, firstName, lastName);
-                System.out.println("Customer created successfully.");
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
+                try {
+                    HOTEL_RESOURCE.createCustomer(email, firstName, lastName);
+                    System.out.println("Customer created successfully.");
+                } catch (IllegalArgumentException e) {
+                    System.out.println(e.getMessage());
+                }
+            } else {
+                System.out.println("Customer with this email invalid or already exists.");
             }
-        } else {
-            System.out.println("Customer with this email invalid or already exists.");
-        }
+
+            System.out.println("Do you want to add another account (Y/N): ");
+            String choice = scanner.next();
+            if (choice.equalsIgnoreCase("N")) {
+                break;
+            } else if (choice.equalsIgnoreCase("Y")) {
+                continue;
+            } else {
+                System.out.println("Invalid choice. Please try again.");
+            }
+        } while (true);
     }
 
     public void findAndReserveARoomUI(Scanner scanner) {
@@ -52,19 +65,24 @@ public class MainMenu {
             }
 
             System.out.println("Enter room number: ");
-            String roomNumber = scanner.nextLine();
+            String roomNumber = scanner.next();
 
             IRoom room = HOTEL_RESOURCE.getRoom(roomNumber);
             if (room != null && rooms.contains(room)) {
                 System.out.println("Enter customer email: ");
-                String email = scanner.nextLine();
+                String email = scanner.next();
 
-                try {
-                    Reservation reservation = HOTEL_RESOURCE.bookRoom(email, room, dates[0], dates[1]);
-                    System.out.println("Room booked successfully.");
-                    System.out.println(reservation);
-                } catch (IllegalArgumentException e) {
-                    System.out.println(e.getMessage());
+                Customer customer = HOTEL_RESOURCE.getCustomer(email);
+                if (customer != null) {
+                    try {
+                        Reservation reservation = HOTEL_RESOURCE.bookRoom(email, room, dates[0], dates[1]);
+                        System.out.println("Room booked successfully.");
+                        System.out.println(reservation);
+                    } catch (IllegalArgumentException e) {
+                        System.out.println(e.getMessage());
+                    }
+                } else {
+                    System.out.println("Customer not found.");
                 }
             } else {
                 System.out.println("Room not found.");
@@ -118,7 +136,7 @@ public class MainMenu {
                 break;
             case 4:
                 // Admin
-                adminManager.displayAdminMenu(scanner, adminManager);
+                displayAdminMenu(scanner);
                 break;
             case 5:
                 // Exit the application
@@ -161,26 +179,28 @@ public class MainMenu {
             } else {
                 System.out.println("Invalid choice. Please try again.");
             }
-        } while (choice < 0 || choice >= menuItems.size());
+        } while (choice < 0 || choice >= menuItems.size() + 1);
         return choice;
     }
 
     private static Date getDate(Scanner scanner) {
+        System.out.print("Enter a date in yyyy/MM/dd format: ");
         while (true) {
-            System.out.print("Enter a date in dd/mm/yyyy format: ");
             String rawDate = scanner.next();
-            if (rawDate.matches("\\d{2}/\\d{2}/\\d{4}")) {
+            if (rawDate.matches("\\d{4}/\\d{2}/\\d{2}")) {
                 String[] parts = rawDate.split("/");
-                int day = Integer.parseInt(parts[0]);
+                int day = Integer.parseInt(parts[2]);
                 int month = Integer.parseInt(parts[1]);
-                int year = Integer.parseInt(parts[2]);
+                int year = Integer.parseInt(parts[0]);
                 try {
                     Calendar calendar = Calendar.getInstance();
-                    calendar.set(year, month, day);
+                    calendar.set(year, month - 1, day);
                     return calendar.getTime();
                 } catch (Exception e) {
                     System.out.println("Invalid date. Please try again.");
                 }                
+            } else {
+                System.out.println("Invalid date. Please try again.");
             }
         }
     }
@@ -199,7 +219,8 @@ public class MainMenu {
         return new Date[] { checkIn, checkOut };
     }
 
-    private void displayAdminMenu(Scanner scanner, AdminMenu adminMenu) {
+    private void displayAdminMenu(Scanner scanner) {
+        AdminMenu adminMenu = AdminMenu.getInstance();
         ArrayList<String> adminMenuItems = new ArrayList<String>() {
             {
                 add("See all Customers");
@@ -239,9 +260,9 @@ public class MainMenu {
         System.out.println("Do you want to continue using the admin services (Y/N): ");
         String choice = scanner.next();
         if (choice.equalsIgnoreCase("Y")) {
-            adminManagement(scanner);
+            displayAdminMenu(scanner);
         } else {
-            adminManager.saveStateToFile();
+            displayMainMenu(scanner);
         }
     }
 
