@@ -36,7 +36,7 @@ public class AdminResource {
      * @return The customer with the given email address, null if no customer was
      *         found
      */
-    public Customer getCustomerByEmail(String email) {
+    public Customer getCustomer(String email) {
         return this.customerService.getCustomer(email);
     }
 
@@ -50,6 +50,26 @@ public class AdminResource {
             this.reservationService.addRoom(room);
         }
     }
+
+    /**
+     * Retrieves all the rooms from the reservation service.
+     *
+     * @return All the rooms available in the hotel
+     */
+    public Collection<IRoom> getAllRooms() {
+        return this.reservationService.getAllRooms();
+    }
+
+    /**
+     * Retrieves a room by its room number.
+     *
+     * @param  roomNumber  The room number of the room to be retrieved
+     * @return The room with the given room number
+     */
+    public IRoom getRoom(String roomNumber) {
+        return this.reservationService.getARoom(roomNumber);
+    }
+
 
     /**
      * Returns a list of all the customers in the hotel

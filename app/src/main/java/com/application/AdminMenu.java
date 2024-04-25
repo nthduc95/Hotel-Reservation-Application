@@ -1,9 +1,6 @@
 package com.application;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.Scanner;
 
 import com.application.api.AdminResource;
 import com.application.model.Customer;
@@ -24,11 +21,10 @@ public class AdminMenu {
     }
 
     public void addRoomUI(Scanner scanner) {
-        List<IRoom> rooms = new ArrayList<IRoom>();
+        List<IRoom> newRooms = new ArrayList<>();
 
         do {
-            var room = addRoom(scanner, rooms);
-            rooms.add(room);
+            newRooms.add(this.addRoom(scanner));
             System.out.println("Do you want to add another room (Y/N): ");
             String choice = scanner.next();
             if (choice.equalsIgnoreCase("N")) {
@@ -40,112 +36,110 @@ public class AdminMenu {
             }
         } while (true);
 
-        adminResource.addRoom(rooms);
+        adminResource.addRoom(newRooms);
     }
 
-    /*
-     * Allow admin to add a room to the system
-     * Data input from keyboard
-     */
-    public Room addRoom(Scanner scanner, List<IRoom> newRooms) {
+  
+    public IRoom addRoom(Scanner scanner) {
         System.out.println("=================== Add Room - Admin Manager ===================");
 
-        String roomNumber;
-        while (true) {
-            System.out.println("Please enter room number: ");
-            roomNumber = scanner.next();
-            // Check if room number is not a valid number
-            if (!roomNumber.matches("[0-9]+")) {
-                System.out.println("Invalid room number. Please try again.");
-                continue;
-            }
+        String roomNumber = getValidRoomNumber(scanner);
 
-            final String finalRoomNumber = roomNumber;
-            if (roomNumber != null && !roomNumber.isEmpty()) {
-                if (adminResource.getRoom(roomNumber) != null
-                        || newRooms.stream().anyMatch(room -> room.getRoomNumber().equalsIgnoreCase(finalRoomNumber))) {
-                    System.out.println("Room number already exists. Please try again.");
-                    continue;
-                }
-                break;
-            } else {
-                System.out.println("Invalid room number. Please try again.");
-                scanner.next();
-            }
-        }
+        int roomTypeIdx = getValidRoomTypeIdx(scanner);
+        RoomType roomType = RoomType.values()[roomTypeIdx - 1];
 
-        // Print Enum RoomType to console for admin to choose
+        boolean isFree = getValidIsFree(scanner);
 
-        int roomType = 0;
-        while (true) {
-            int i = 1;
-            for (RoomType type : RoomType.values()) {
-                System.out.println(i + ". " + type);
-                i++;
-            }
+        double price = getValidPrice(scanner);
 
-            System.out.println("Please enter room type: ");
-
-            if (scanner.hasNextInt()) {
-                roomType = scanner.nextInt();
-                if (roomType > 0 && roomType <= RoomType.values().length) {
-                    break;
-                } else {
-                    System.out.println("Invalid choice. Please try again.");
-                }
-            } else {
-                System.out.println("Invalid choice. Please try again.");
-                scanner.next();
-            }
-        }
-
-        // Allow admin to set if room is free
-
-        int free = 0;
-        while (true) {
-            System.out.println("Please enter if room is free (1/2): ");
-            System.out.println("1. True");
-            System.out.println("2. False");
-            if (scanner.hasNextInt()) {
-                free = scanner.nextInt();
-                if (free > 0 && free <= 2) {
-                    break;
-                } else {
-                    System.out.println("Invalid choice. Please try again.");
-                }
-            } else {
-                System.out.println("Invalid choice. Please try again.");
-                scanner.next();
-            }
-        }
-
-        if (free == 1) {
-            return new Room(roomNumber, 0.0, RoomType.values()[roomType - 1], true);
-        }
-
-        // Allow admin to set price for room
-        double price = 0.0;
-        while (true) {
-            System.out.println("Please enter price per night (price > 0): ");
-            if (scanner.hasNextDouble()) {
-                price = scanner.nextDouble();
-                if (price > 0) {
-                    break;
-                } else {
-                    System.out.println("Invalid choice. Please try again.");
-                }
-            } else {
-                System.out.println("Invalid choice. Please try again.");
-                scanner.next();
-            }
-        }
-
-        return new Room(roomNumber, price, RoomType.values()[roomType - 1], free == 1 ? true : false);
+        return new Room(roomNumber, price, roomType, isFree);
     }
 
-    /*
-     * Allow admin to see all rooms in the system
+    /**
+     * A function that prompts the user to enter a valid room number.
+     *
+     * @param  scanner  the Scanner object used for user input
+     * @return  the valid room number entered by the user
      */
+    private String getValidRoomNumber(Scanner scanner) {
+        while (true) {
+            System.out.println("Please enter room number: ");
+            String roomNumber = scanner.next();
+
+            if (adminResource.getRoom(roomNumber) != null) {
+                System.out.println("Room number already exists. Please try again.");
+            } else {
+                return roomNumber;
+            }
+        }
+    }
+
+    /**
+     * Retrieves a valid room type index from the user input.
+     *
+     * @param  scanner  the Scanner object used for user input
+     * @return the valid room type index entered by the user
+     */
+    private int getValidRoomTypeIdx(Scanner scanner) {
+        while (true) {
+            System.out.println("Please enter room type: ");
+            if (scanner.hasNextInt()) {
+                int roomTypeIdx = scanner.nextInt();
+                if (roomTypeIdx > 0 && roomTypeIdx <= RoomType.values().length) {
+                    return roomTypeIdx;
+                } else {
+                    System.out.println("Invalid choice. Please try again.");
+                    scanner.next();
+                }
+            } else {
+                System.out.println("Invalid choice. Please try again.");
+                scanner.next();
+            }
+        }
+    }
+
+    /**
+     * Retrieves a valid input from the user to determine if a room is free or not.
+     *
+     * @param  scanner  the Scanner object used for user input
+     * @return true if the room is free, false otherwise
+     */
+    private boolean getValidIsFree(Scanner scanner) {
+        while (true) {
+            System.out.println("Please enter if room is free (1/2): ");
+
+            if (scanner.hasNextInt()) {
+                int isFree = scanner.nextInt();
+                if (isFree == 1 || isFree == 2) {
+                    return isFree == 1;
+                } else {
+                    System.out.println("Invalid choice. Please try again.");
+                }
+            } else {
+                System.out.println("Invalid choice. Please try again.");
+                scanner.next();
+            }
+        }
+    }
+
+    private double getValidPrice(Scanner scanner) {
+        while (true) {
+            System.out.println("Please enter price per night (price > 0): ");
+
+            if (scanner.hasNextDouble()) {
+                double price = scanner.nextDouble();
+                if (price > 0) {
+                    return price;
+                } else {
+                    System.out.println("Invalid choice. Please try again.");
+                }
+            } else {
+                System.out.println("Invalid choice. Please try again.");
+                scanner.next();
+            }
+        }
+    }
+
     public void displayAllRooms() {
         System.out.println("=================== All Rooms - Admin Manager ===================");
         Collection<IRoom> rooms = adminResource.getAllRooms();
@@ -156,17 +150,11 @@ public class AdminMenu {
         }
     }
 
-    /*
-     * Allow admin to see all reservations in the system
-     */
     public void displayAllReservations() {
         System.out.println("=================== All Reservations - Admin Manager ===================");
         adminResource.displayAllReservations();
     }
 
-    /*
-     * Allow admin to see all customers in the system
-     */
     public void displayAllCustomers() {
         System.out.println("=================== All Customers - Admin Manager ===================");
         Collection<Customer> customers = adminResource.getAllCustomers();
@@ -177,11 +165,4 @@ public class AdminMenu {
         }
     }
 
-    public void saveStateToFile() {
-        adminResource.saveStateToFile();
-    }
-
-    public void loadStateFromFile() {
-        adminResource.loadStateFromFile();
-    }
 }

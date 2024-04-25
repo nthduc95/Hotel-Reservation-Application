@@ -118,8 +118,7 @@ public class MainMenu {
                 break;
             case 4:
                 // Admin
-                // AdminMenu adminManager = AdminMenu.getInstance();
-                // adminManager.displayAdminMenu(scanner);
+                adminManager.displayAdminMenu(scanner, adminManager);
                 break;
             case 5:
                 // Exit the application
@@ -177,7 +176,7 @@ public class MainMenu {
                 int year = Integer.parseInt(parts[2]);
                 try {
                     Calendar calendar = Calendar.getInstance();
-                    calendar.set(year, month - 1, day);
+                    calendar.set(year, month, day);
                     return calendar.getTime();
                 } catch (Exception e) {
                     System.out.println("Invalid date. Please try again.");
@@ -198,6 +197,52 @@ public class MainMenu {
             }
         }
         return new Date[] { checkIn, checkOut };
+    }
+
+    private void displayAdminMenu(Scanner scanner, AdminMenu adminMenu) {
+        ArrayList<String> adminMenuItems = new ArrayList<String>() {
+            {
+                add("See all Customers");
+                add("See all Rooms");
+                add("See all Reservations");
+                add("Add a Room");
+                add("Back to Main Menu");
+            }
+        };
+        int adminMenuChoice = getMenuChoice("Admin Menu", adminMenuItems, scanner);
+        switch (adminMenuChoice) {
+            case 1:
+                // See all Customers
+                adminMenu.displayAllCustomers();
+                break;
+            case 2:
+                // See all Rooms
+                adminMenu.displayAllRooms();
+                break;
+            case 3:
+                // See all Reservations
+                adminMenu.displayAllReservations();
+                break;
+            case 4:
+                // Add a Room
+                adminMenu.addRoomUI(scanner);
+                break;
+            case 5:
+                // Back to Main Menu
+                displayMainMenu(scanner);
+                break;
+            default:
+                break;
+        }
+
+        // check if user wants to continue using the application
+        System.out.println("Do you want to continue using the admin services (Y/N): ");
+        String choice = scanner.next();
+        if (choice.equalsIgnoreCase("Y")) {
+            adminManagement(scanner);
+        } else {
+            adminManager.saveStateToFile();
+        }
     }
 
 }
