@@ -76,7 +76,7 @@ public class MainMenu {
 
     public void displayMyReservationsUI(Scanner scanner) {
         System.out.print("Enter customer email: ");
-        String email = scanner.nextLine();
+        String email = scanner.next();
         Collection<Reservation> reservations = HOTEL_RESOURCE.getReservations(email);
         if (reservations.isEmpty()) {
             System.out.println("No reservations found for this customer.");
@@ -168,6 +168,7 @@ public class MainMenu {
 
     private static Date getDate(Scanner scanner) {
         while (true) {
+            System.out.print("Enter a date in dd/mm/yyyy format: ");
             String rawDate = scanner.next();
             if (rawDate.matches("\\d{2}/\\d{2}/\\d{4}")) {
                 String[] parts = rawDate.split("/");
@@ -182,8 +183,6 @@ public class MainMenu {
                     System.out.println("Invalid date. Please try again.");
                 }                
             }
-            System.out.print("Enter a date in dd/mm/yyyy format: ");
-            rawDate = scanner.next();
         }
     }
 
