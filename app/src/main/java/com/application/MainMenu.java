@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.Scanner;
+import java.text.SimpleDateFormat;
 
 import com.application.api.HotelResource;
 import com.application.model.Customer;
@@ -55,40 +56,66 @@ public class MainMenu {
     }
 
     public void findAndReserveARoomUI(Scanner scanner) {
-        Date[] dates = getDateRange(scanner);
-        Collection<IRoom> rooms = HOTEL_RESOURCE.findAvailableRooms(dates[0], dates[1]);
-
-        if (rooms.size() > 0) {
-            System.out.println("List of available rooms: ");
-            for (IRoom room : rooms) {
-                System.out.println(room);
-            }
-
-            System.out.println("Enter room number: ");
-            String roomNumber = scanner.next();
-
-            IRoom room = HOTEL_RESOURCE.getRoom(roomNumber);
-            if (room != null && rooms.contains(room)) {
-                System.out.println("Enter customer email: ");
-                String email = scanner.next();
-
-                Customer customer = HOTEL_RESOURCE.getCustomer(email);
-                if (customer != null) {
-                    try {
-                        Reservation reservation = HOTEL_RESOURCE.bookRoom(email, room, dates[0], dates[1]);
-                        System.out.println("Room booked successfully.");
-                        System.out.println(reservation);
-                    } catch (IllegalArgumentException e) {
-                        System.out.println(e.getMessage());
+        DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");  
+        Collection<IRoom> rooms;   
+        do {
+            Date[] dates = getDateRange(scanner);
+            Date checkIn = dates[0];
+            Date checkOut = dates[1];
+            rooms = HOTEL_RESOURCE.findAvailableRooms(checkIn, checkOut);
+            if (rooms.size() > 0) {
+                System.out.println("List of available rooms(" + df.format(checkIn) + " -> "+ df.format(checkOut)"): ");                
+            } else {
+                System.out.println("No rooms available for this date range.");
+                Date suggestedCheckIn = new Date(checkIn.getTime() + 7 * 24 * 60 * 60 * 1000);
+                Date suggestedCheckOut = new Date(checkOut.getTime() + 7 * 24 * 60 * 60 * 1000);
+                rooms = hotelResource.findARoom(suggestedCheckIn, suggestedCheckOut);
+                if (rooms.size() == 0) {
+                    String choice;
+                    do {
+                        System.out.println("Do you want to choose another date range (Y/N): ");
+                        choice = scanner.next();
+                    } while (!choice.equalsIgnoreCase("N") && !choice.equalsIgnoreCase("Y"));
+                    if (choice.equalsIgnoreCase("N")) {
+                        return;
                     }
                 } else {
-                    System.out.println("Customer not found.");
+                    System.out.println("List of available rooms(" + df.format(suggestedCheckIn) + " -> "+ df.format(suggestedCheckOut)"): ");
+                }
+                
+            }
+        } while (true);  
+
+        if (ooms.size() == 0) {
+            System.out.println("No rooms available for this date range.");
+            return;
+        }        
+        for (IRoom room : rooms) {
+            System.out.println(room);
+        }
+
+        System.out.println("Enter room number: ");
+        String roomNumber = scanner.next();
+
+        IRoom room = HOTEL_RESOURCE.getRoom(roomNumber);
+        if (room != null && rooms.contains(room)) {
+            System.out.println("Enter customer email: ");
+            String email = scanner.next();
+
+            Customer customer = HOTEL_RESOURCE.getCustomer(email);
+            if (customer != null) {
+                try {
+                    Reservation reservation = HOTEL_RESOURCE.bookRoom(email, room, checkIn, checkOut);
+                    System.out.println("Room booked successfully.");
+                    System.out.println(reservation);
+                } catch (IllegalArgumentException e) {
+                    System.out.println(e.getMessage());
                 }
             } else {
-                System.out.println("Room not found.");
+                System.out.println("Customer not found.");
             }
         } else {
-            System.out.println("No rooms available for this date range.");
+            System.out.println("Room not found.");
         }
     }
 
