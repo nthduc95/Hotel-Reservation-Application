@@ -56,21 +56,21 @@ public class MainMenu {
     }
 
     public void findAndReserveARoomUI(Scanner scanner) {
-        DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");  
-        Collection<IRoom> rooms;   
+        boolean isSuggested = false;
+        Collection<IRoom> rooms;
         do {
             Date[] dates = getDateRange(scanner);
             Date checkIn = dates[0];
             Date checkOut = dates[1];
             rooms = HOTEL_RESOURCE.findAvailableRooms(checkIn, checkOut);
             if (rooms.size() > 0) {
-                System.out.println("List of available rooms(" + df.format(checkIn) + " -> "+ df.format(checkOut)"): ");                
+                bookingRoom(scanner, checkIn, checkOut, rooms);             
             } else {
                 System.out.println("No rooms available for this date range.");
                 Date suggestedCheckIn = new Date(checkIn.getTime() + 7 * 24 * 60 * 60 * 1000);
                 Date suggestedCheckOut = new Date(checkOut.getTime() + 7 * 24 * 60 * 60 * 1000);
-                rooms = hotelResource.findARoom(suggestedCheckIn, suggestedCheckOut);
-                if (rooms.size() == 0) {
+                Collection<IRoom> suggestedRooms = hotelResource.findARoom(suggestedCheckIn, suggestedCheckOut);
+                if (suggestedRooms.size() == 0) {
                     String choice;
                     do {
                         System.out.println("Do you want to choose another date range (Y/N): ");
@@ -80,43 +80,10 @@ public class MainMenu {
                         return;
                     }
                 } else {
-                    System.out.println("List of available rooms(" + df.format(suggestedCheckIn) + " -> "+ df.format(suggestedCheckOut)"): ");
+                    bookingRoom(scanner, suggestedCheckIn, suggestedCheckOut, suggestedRooms);
                 }
-                
             }
-        } while (true);  
-
-        if (ooms.size() == 0) {
-            System.out.println("No rooms available for this date range.");
-            return;
-        }        
-        for (IRoom room : rooms) {
-            System.out.println(room);
-        }
-
-        System.out.println("Enter room number: ");
-        String roomNumber = scanner.next();
-
-        IRoom room = HOTEL_RESOURCE.getRoom(roomNumber);
-        if (room != null && rooms.contains(room)) {
-            System.out.println("Enter customer email: ");
-            String email = scanner.next();
-
-            Customer customer = HOTEL_RESOURCE.getCustomer(email);
-            if (customer != null) {
-                try {
-                    Reservation reservation = HOTEL_RESOURCE.bookRoom(email, room, checkIn, checkOut);
-                    System.out.println("Room booked successfully.");
-                    System.out.println(reservation);
-                } catch (IllegalArgumentException e) {
-                    System.out.println(e.getMessage());
-                }
-            } else {
-                System.out.println("Customer not found.");
-            }
-        } else {
-            System.out.println("Room not found.");
-        }
+        } while (true);       
     }
 
     public void displayMyReservationsUI(Scanner scanner) {
@@ -185,6 +152,37 @@ public class MainMenu {
         } else {
             System.out.println("Thank you for using our application.");
             scanner.close();
+        }
+    }
+
+    private static void bookingRoom(Scanner scanner, Date checkIn, Date checkOut, Collection<IRoom> rooms) {
+        DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");  
+        System.out.println("List of available rooms(" + df.format(checkIn) + " -> "+ df.format(checkOut)"): ");
+        for (IRoom room : rooms) {
+            System.out.println(room);
+        }
+        System.out.println("Enter room number: ");
+        String roomNumber = scanner.next();
+
+        IRoom room = HOTEL_RESOURCE.getRoom(roomNumber);
+        if (room != null && rooms.contains(room)) {
+            System.out.println("Enter customer email: ");
+            String email = scanner.next();
+
+            Customer customer = HOTEL_RESOURCE.getCustomer(email);
+            if (customer != null) {
+                try {
+                    Reservation reservation = HOTEL_RESOURCE.bookRoom(email, room, checkIn, checkOut);
+                    System.out.println("Room booked successfully.");
+                    System.out.println(reservation);
+                } catch (IllegalArgumentException e) {
+                    System.out.println(e.getMessage());
+                }
+            } else {
+                System.out.println("Customer not found.");
+            }
+        } else {
+            System.out.println("Room not found.");
         }
     }
 
