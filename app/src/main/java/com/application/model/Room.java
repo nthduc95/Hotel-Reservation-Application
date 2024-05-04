@@ -86,6 +86,6 @@ public class Room implements IRoom {
     @Override
     public String toString() {
         return String.format("Room={number=%s, price=%.2f, type=%s, free=%b}",
-                roomNumber, roomPrice, roomType, free);
+                roomNumber, roomPrice, roomType == RoomType.SINGLE ? "SINGLE" : "DOUBLE", free);
     }
 }

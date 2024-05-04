@@ -1,5 +1,6 @@
 package com.application;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.ArrayList;
@@ -7,7 +8,6 @@ import java.util.List;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.Scanner;
-import java.text.SimpleDateFormat;
 
 import com.application.api.HotelResource;
 import com.application.model.Customer;
@@ -56,21 +56,21 @@ public class MainMenu {
     }
 
     public void findAndReserveARoomUI(Scanner scanner) {
-        boolean isSuggested = false;
         Collection<IRoom> rooms;
         do {
             Date[] dates = getDateRange(scanner);
             Date checkIn = dates[0];
             Date checkOut = dates[1];
             rooms = HOTEL_RESOURCE.findAvailableRooms(checkIn, checkOut);
-            if (rooms.size() > 0) {
-                bookingRoom(scanner, checkIn, checkOut, rooms);             
+            if (!rooms.isEmpty()) {
+                bookingRoom(scanner, checkIn, checkOut, rooms);
+                return;
             } else {
                 System.out.println("No rooms available for this date range.");
                 Date suggestedCheckIn = new Date(checkIn.getTime() + 7 * 24 * 60 * 60 * 1000);
                 Date suggestedCheckOut = new Date(checkOut.getTime() + 7 * 24 * 60 * 60 * 1000);
-                Collection<IRoom> suggestedRooms = hotelResource.findARoom(suggestedCheckIn, suggestedCheckOut);
-                if (suggestedRooms.size() == 0) {
+                Collection<IRoom> suggestedRooms = HOTEL_RESOURCE.findAvailableRooms(suggestedCheckIn, suggestedCheckOut);
+                if (suggestedRooms.isEmpty()) {
                     String choice;
                     do {
                         System.out.println("Do you want to choose another date range (Y/N): ");
@@ -81,6 +81,7 @@ public class MainMenu {
                     }
                 } else {
                     bookingRoom(scanner, suggestedCheckIn, suggestedCheckOut, suggestedRooms);
+                    return;
                 }
             }
         } while (true);       
@@ -156,8 +157,8 @@ public class MainMenu {
     }
 
     private static void bookingRoom(Scanner scanner, Date checkIn, Date checkOut, Collection<IRoom> rooms) {
-        DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");  
-        System.out.println("List of available rooms(" + df.format(checkIn) + " -> "+ df.format(checkOut)"): ");
+        DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        System.out.println("List of available rooms(" + df.format(checkIn) + " -> "+ df.format(checkOut) +"): ");
         for (IRoom room : rooms) {
             System.out.println(room);
         }
@@ -201,10 +202,12 @@ public class MainMenu {
         do {
             if (scanner.hasNextInt()) {
                 choice = scanner.nextInt();
-            } else {
-                System.out.println("Invalid choice. Please try again.");
             }
-        } while (choice < 0 || choice >= menuItems.size() + 1);
+            if (choice > menuItems.size() || choice <= 0) {
+                System.out.println("Invalid choice. Please try again.");
+                scanner.nextLine();
+            }
+        } while (choice <= 0 || choice > menuItems.size());
         return choice;
     }
 

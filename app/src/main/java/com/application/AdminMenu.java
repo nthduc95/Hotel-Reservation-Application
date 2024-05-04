@@ -9,6 +9,7 @@ import com.application.api.AdminResource;
 import com.application.model.Customer;
 import com.application.model.IRoom;
 import com.application.model.Room;
+import com.application.model.FreeRoom;
 import com.application.model.RoomType;
 
 public class AdminMenu {
@@ -54,8 +55,11 @@ public class AdminMenu {
         boolean isFree = getValidIsFree(scanner);
 
         double price = getValidPrice(scanner);
-
-        return new Room(roomNumber, price, roomType, isFree);
+        if (isFree) {
+            return new FreeRoom(roomNumber, price, roomType, isFree);
+        } else {
+            return new Room(roomNumber, price, roomType, isFree);
+        }
     }
 
     /**
