@@ -115,7 +115,6 @@ public class MainMenu {
         };
 
         int mainMenuChoice = getMenuChoice("Main Menu", mainMenuItems, scanner);
-        System.out.println(mainMenuChoice);
         switch (mainMenuChoice) {
             case 1:
                 // Find and reserve a room
@@ -131,7 +130,6 @@ public class MainMenu {
                 break;
             case 4:
                 // Admin
-                displayAdminMenu(scanner);
                 break;
             case 5:
                 // Exit the application
@@ -140,19 +138,12 @@ public class MainMenu {
                 break;
         }
 
-        if (mainMenuChoice != 5) {
-            // check if user wants to continue using the application
-            System.out.println("Do you want to continue using the application (Y/N): ");
-            String choice = scanner.next();
-            if (choice.equalsIgnoreCase("Y")) {
-                displayMainMenu(scanner);
-            } else {
-                System.out.println("Thank you for using our application.");
-                scanner.close();
-            }
-        } else {
+        if (mainMenuChoice == 5 ) {
             System.out.println("Thank you for using our application.");
-            scanner.close();
+        } else if (mainMenuChoice ==  4 ) {
+            displayAdminMenu(scanner);
+        } else {
+            displayMainMenu(scanner);
         }
     }
 
@@ -278,20 +269,25 @@ public class MainMenu {
                 break;
             case 5:
                 // Back to Main Menu
-                displayMainMenu(scanner);
+
                 break;
             default:
                 break;
         }
 
-        // check if user wants to continue using the application
-        System.out.println("Do you want to continue using the admin services (Y/N): ");
-        String choice = scanner.next();
-        if (choice.equalsIgnoreCase("Y")) {
+        if (adminMenuChoice != 5) {
             displayAdminMenu(scanner);
         } else {
             displayMainMenu(scanner);
         }
+//        // check if user wants to continue using the application
+//        System.out.println("Do you want to continue using the admin services (Y/N): ");
+//        String choice = scanner.next();
+//        if (choice.equalsIgnoreCase("Y")) {
+//            displayAdminMenu(scanner);
+//        } else {
+//            displayMainMenu(scanner);
+//        }
     }
 
 }

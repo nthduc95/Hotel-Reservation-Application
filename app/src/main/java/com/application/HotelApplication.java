@@ -5,8 +5,13 @@ import com.application.MainMenu;
 
 public class HotelApplication {
     public static void main(String[] args) {
-        Scanner input = new Scanner(System.in);
-        MainMenu menu = MainMenu.getInstance();
-        menu.displayMainMenu(input);
+        try {
+            Scanner input = new Scanner(System.in);
+            MainMenu menu = MainMenu.getInstance();
+            menu.displayMainMenu(input);
+        } catch (Exception err) {
+            System.out.println("Thank you for using our application !!!");
+        }
+
     }
 }
