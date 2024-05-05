@@ -1,8 +1,6 @@
 package com.application.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 
 import com.application.model.Customer;
 import com.application.model.IRoom;
@@ -18,12 +16,12 @@ public class ReservationService {
     /**
      * A collection of all the reservations in the hotel
      */
-    private Collection<Reservation> reservations = new ArrayList<>();
+    private Set<Reservation> reservations = new HashSet<>();
 
     /**
      * A collection of all the rooms in the hotel
      */
-    private Collection<IRoom> rooms = new ArrayList<>();
+    private Set<IRoom> rooms = new HashSet<>();
 
 
     /**

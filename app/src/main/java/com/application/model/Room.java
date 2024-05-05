@@ -1,5 +1,7 @@
 package com.application.model;
 
+import java.util.Objects;
+
 /**
  * A room in the hotel
  */
@@ -87,5 +89,18 @@ public class Room implements IRoom {
     public String toString() {
         return String.format("Room={number=%s, price=%.2f, type=%s, free=%b}",
                 roomNumber, roomPrice, roomType == RoomType.SINGLE ? "SINGLE" : "DOUBLE", free);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Room room = (Room) o;
+        return Objects.equals(roomNumber, room.roomNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(roomNumber);
     }
 }
